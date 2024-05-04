@@ -1,29 +1,44 @@
 
 <?php
 
-require('web/connect.php');
+//require('web/connect.php');
 
 
-   // echo( $conn );
+
     $conn = new mysqli('127.0.0.1:3300', 'example', 'secret2', 'stage');
 
-    if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-    }
+        if ($conn->connect_error) die("Connection failed: " . $conn->connect_error);
 
-    // //MyGuests
-    // $sql = "CREATE TABLE Posts (
-    //     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    //     title TEXT NOT NULL,
-    //     body TEXT NOT NULL,
-    //     userId INT NOT NULL
-    // )";
+        $sql = [];
 
-    // if ($conn->query($sql) === TRUE) {
-    // echo "Table Posts created successfully";
-    // } else {
-    // echo "Error creating table: " . $conn->error;
-    // }
+        $sql[] = "CREATE TABLE Posts (
+            id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+            title TEXT NOT NULL,
+            body TEXT NOT NULL,
+            userId INT NOT NULL
+        )";
+
+        
+        $sql[] = "CREATE TABLE Comments (
+            id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+            name VARCHAR(255) NOT NULL,
+            email VARCHAR(255) NOT NULL,
+            body TEXT NOT NULL,
+            postId INT NOT NULL
+        )";
+
+        foreach($sql as $item)
+        {
+            if ($conn->query($item) === TRUE) 
+            {
+                echo "New table created ...".PHP_EOL;
+            } else {
+                echo "Error: " . $sql . "<br>" . $conn->error;
+            }
+        }
+        
+
+
 
     $conn->close();
 

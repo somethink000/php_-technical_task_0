@@ -8,9 +8,6 @@ services:
         volumes:
             - ./web:/srv/www/api
             - ./config/php/www.conf:/usr/local/etc/php-fpm.d/www.conf
-        environment:
-            MYSQL_USER: example
-            MYSQL_PASSWORD: secret2
         depends_on:
             - db
         links:
@@ -35,9 +32,9 @@ services:
             - ./data/init.sql:/data/application/init.sql
             - db_data:/var/lib/mysql
         environment:
-            MYSQL_ROOT_PASSWORD: secret
-            MYSQL_DATABASE: stage   
-            MYSQL_USER: example
-            MYSQL_PASSWORD: secret2
+            MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+            MYSQL_DATABASE: ${DB_NAME}    
+            MYSQL_USER: ${DB_USER}  
+            MYSQL_PASSWORD: ${DB_PASSWORD}
 volumes:
     db_data:

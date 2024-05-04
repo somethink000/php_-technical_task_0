@@ -17,16 +17,23 @@
     <body>
         
     <?php
-           // phpinfo();
 
-            
-            //$conn = new mysqli('127.0.0.1:3300', 'example', 'secret2', 'stage');
+  
+            $con = mysqli_connect("db","example","secret2","stage") or die('Failed to connect to the database, died with error:');
 
-            // if ($conn->connect_error) {
-            // die("Connection failed: " . $conn->connect_error);
-            // }
-            //$con=mysqli_connect('db', 'example', 'secret2', 'stage', '3300') or die('Failed to connect to the database, died with error:');
-            $con = mysqli_connect("db","example","secret2","stage");
+            $sql = "SELECT id, title, body FROM MyGuests";
+            $result = mysqli_query($con, $sql);//$conn->query($sql);
+
+
+            if ($result->num_rows > 0) {
+            // output data of each row
+            while($row = $result->fetch_assoc()) {
+                echo "id: " . $row["id"]. " - Name: " . $row["title"]. " " . $row["body"]. "<br>";
+            }
+            } else {
+            echo "0 results";
+            }
+
         ?>
 
     </body> 
