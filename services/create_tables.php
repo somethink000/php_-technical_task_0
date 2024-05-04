@@ -1,11 +1,8 @@
 
 <?php
 
-//require('web/connect.php');
+    require('services/connect.php');
 
-
-
-    $conn = new mysqli('127.0.0.1:3300', 'example', 'secret2', 'stage');
 
         if ($conn->connect_error) die("Connection failed: " . $conn->connect_error);
 
@@ -37,10 +34,4 @@
             }
         }
         
-
-
-
-    $conn->close();
-
-
 ?>

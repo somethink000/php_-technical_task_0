@@ -1,28 +1,80 @@
 <?php
     
-    // $curlSession = curl_init();
-    // curl_setopt($curlSession, CURLOPT_URL, 'https://jsonplaceholder.typicode.com/posts');
-    // curl_setopt($curlSession, CURLOPT_BINARYTRANSFER, true);
-    // curl_setopt($curlSession, CURLOPT_RETURNTRANSFER, true);
-
-    // $jsonData = json_decode(curl_exec($curlSession));
+    require('services/connect.php');
     
-    // var_dump($jsonData[1]->title);
 
-    // curl_close($curlSession);
+    function importPosts($data, $conn)
+    {
+      foreach ($data as $i)
+      {
+        $sql = "INSERT INTO Posts (title, body, userId)
+        VALUES ('".$i->title."', '".$i->body."', '".$i->userId."')";
+        
+        if ($conn->query($sql) === TRUE) 
+        {
+            echo "New post row created ...".PHP_EOL;
+        } else {
+            echo "Error: " . $sql . "<br>" . $conn->error;
+        }
+
+      }
+    }
 
 
+    function importComments($data, $conn)
+    {
+      foreach ($data as $i)
+      {
+        $sql = "INSERT INTO Comments (name, email, body, postId)
+        VALUES ('".$i->name."', '".$i->email."', '".$i->body."', '".$i->postId."')";
+
+
+        //DRY Alarm DRY Alarm
+        if ($conn->query($sql) === TRUE) 
+        {
+            echo "New comment row created ...".PHP_EOL;
+        } else {
+            echo "Error: " . $sql . "<br>" . $conn->error;
+        }
+      }
+
+      
+
+    }
 
    
+
+    $urls = array(
+      'https://jsonplaceholder.typicode.com/posts',
+      'https://jsonplaceholder.typicode.com/comments',
+    );
+
     
-   
-    $conn = new mysqli('127.0.0.1:3300', 'example', 'secret2', 'stage');
+    $curlSession = curl_init();
 
-       // $sql = "INSERT INTO MyGuests (title, body, userId)
-      // VALUES ('John', 'Doe', 1)";
+      foreach($urls as $item)
+      {
+        
+        curl_setopt($curlSession, CURLOPT_URL, $item);
+        curl_setopt($curlSession, CURLOPT_BINARYTRANSFER, true);
+        curl_setopt($curlSession, CURLOPT_RETURNTRANSFER, true);
 
+        $jsonData = json_decode(curl_exec($curlSession));
+        
 
+        if ($item == 'https://jsonplaceholder.typicode.com/posts')
+        {
+          importPosts($jsonData, $conn);
+        }
+        elseif($item == 'https://jsonplaceholder.typicode.com/comments')
+        {
+          importComments($jsonData, $conn);
+        }
 
-    $conn->close();
+      }
+
+    curl_close($curlSession); 
+
+    
 
 ?>
