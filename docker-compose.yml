@@ -1,4 +1,3 @@
-version: '3'
  
 services:
     php:
@@ -9,6 +8,9 @@ services:
         volumes:
             - ./web:/srv/www/api
             - ./config/php/www.conf:/usr/local/etc/php-fpm.d/www.conf
+        environment:
+            MYSQL_USER: example
+            MYSQL_PASSWORD: secret2
         depends_on:
             - db
         links:
@@ -34,9 +36,8 @@ services:
             - db_data:/var/lib/mysql
         environment:
             MYSQL_ROOT_PASSWORD: secret
-            MYSQL_DATABASE: stage
+            MYSQL_DATABASE: stage   
             MYSQL_USER: example
             MYSQL_PASSWORD: secret2
-
 volumes:
     db_data:

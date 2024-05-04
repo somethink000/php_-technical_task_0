@@ -17,14 +17,16 @@
     <body>
         
     <?php
+           // phpinfo();
+
             
-            
-            // $conn = new mysqli('127.0.0.1:3300', 'example', 'secret2', 'stage');
+            //$conn = new mysqli('127.0.0.1:3300', 'example', 'secret2', 'stage');
 
             // if ($conn->connect_error) {
             // die("Connection failed: " . $conn->connect_error);
             // }
-            $con=mysqli_connect('db', 'example', 'secret2', 'stage', '3300') or die('Failed to connect to the database, died with error:');
+            //$con=mysqli_connect('db', 'example', 'secret2', 'stage', '3300') or die('Failed to connect to the database, died with error:');
+            $con = mysqli_connect("db","example","secret2","stage");
         ?>
 
     </body> 

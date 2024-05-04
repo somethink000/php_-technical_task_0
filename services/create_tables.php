@@ -5,7 +5,7 @@ require('web/connect.php');
 
 
    // echo( $conn );
-    $conn = new mysqli('127.0.0.1', 'example', 'secret2', 'stage');
+    $conn = new mysqli('127.0.0.1:3300', 'example', 'secret2', 'stage');
 
     if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
