@@ -5,40 +5,38 @@
 
     function importPosts($data, $conn)
     {
+      $count = 0;
+
       foreach ($data as $i)
       {
         $sql = "INSERT INTO Posts (title, body, userId)
         VALUES ('".$i->title."', '".$i->body."', '".$i->userId."')";
         
-        if ($conn->query($sql) === TRUE) 
-        {
-            echo "New post row created ...".PHP_EOL;
-        } else {
-            echo "Error: " . $sql . "<br>" . $conn->error;
-        }
-
+        if ($conn->query($sql) != TRUE) echo "Error: " . $sql . "<br>" . $conn->error;
+        
+        $count++;
       }
+      echo "Загружено постов: ".$count.PHP_EOL;
     }
 
 
     function importComments($data, $conn)
     {
+
+      $count = 0;
+
       foreach ($data as $i)
       {
         $sql = "INSERT INTO Comments (name, email, body, postId)
         VALUES ('".$i->name."', '".$i->email."', '".$i->body."', '".$i->postId."')";
 
 
-        //DRY Alarm DRY Alarm
-        if ($conn->query($sql) === TRUE) 
-        {
-            echo "New comment row created ...".PHP_EOL;
-        } else {
-            echo "Error: " . $sql . "<br>" . $conn->error;
-        }
+        if ($conn->query($sql) != TRUE) echo "Error: " . $sql . "<br>" . $conn->error;
+        
+        $count++;
       }
 
-      
+      echo "Загружено коментариев: ".$count.PHP_EOL;
 
     }
 
