@@ -4,7 +4,8 @@
 
 #### Приложение поднимается с докера 
 
-
+#### Стэк Nginx Php-fpm Ajax Jquery Docker MySQLi
+ 
 <p align="center">
     <img width="1000px" src="/exmpl.png" alt="qr"/>
 </p>
