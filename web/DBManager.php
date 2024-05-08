@@ -1,86 +1,86 @@
 <?php
 
-function conectionStart(){
-  $servername = "db";
-  $username = "example";
-  $password = "secret2";
-  $dbname = "stage";
-  $connection = mysqli_connect($servername, $username, $password, $dbname);
-  return $connection;
- }
-function conectionEnd($value){
-  mysqli_close($value);
- }
-function fetch($value=''){
+function conectionStart()
+{
+    $servername = "db";
+    $username = "example";
+    $password = "secret2";
+    $dbname = "stage";
+    $connection = mysqli_connect($servername, $username, $password, $dbname);
+    return $connection;
+}
+function conectionEnd($value)
+{
+    mysqli_close($value);
+}
+function fetch($value = '')
+{
     $connection = conectionStart();
-    
+
     $result = array();
 
-    if (strlen($value) > 2)
-    {
+    if (strlen($value) > 2) {
 
-        $commentsResult = mysqli_query($connection, "SELECT * FROM Comments WHERE name LIKE '%".$value."%'");
-
-        
-        foreach ($commentsResult as $item)
-        {   
-            
-            $postsResult = mysqli_query($connection, "SELECT * FROM Posts WHERE id = '".$item['postId']."'"); 
-            
-            foreach($postsResult as $i)
-            {
-                
-                if(!isset($result[$i['id']]))
-                {
-                    $result[$i['id']] = $i;
-                    $result[$i['id']]['comment'] = $item['name'];
-                }
-            }
-            
+        $commentsResult = mysqli_query($connection, "SELECT * FROM Comments WHERE name LIKE '%" . $value . "%'");
+        $commentsResultArray = array();
+        while($row = mysqli_fetch_assoc($commentsResult)) {
+            $commentsResultArray[] = $row;
         }
-    }else
-    {
-        $result = mysqli_query($connection, "SELECT * FROM Posts"); 
+
+        $postsIds = array_unique(array_map(fn($comment) => $comment['postId'], $commentsResultArray));
+
+        $postsIdsSQL = implode(',', $postsIds);
+
+        $postsResult = mysqli_query($connection, "SELECT * FROM Posts WHERE id IN ($postsIdsSQL)");
+
+        foreach ($postsResult as $post) {
+            $result[$post['id']] = $post;
+        }
+
+        foreach ($commentsResult as $comment) {
+
+            $result[$comment['postId']]['comment'] = $comment['name'];
+
+        }
+    } else {
+        $result = mysqli_query($connection, "SELECT * FROM Posts");
     }
 
 
-    if($result) {
-        
+    if ($result) {
+
 
         echo "<thead>";
-            echo "<tr>";
-                echo "<th scope='col'>Id</th>";
-                echo "<th scope='col'>Title</th>";
-                echo "<th scope='col'>Body</th>";
-                echo "<th scope='col'>Comment</th>";
-            echo "</tr>";
+        echo "<tr>";
+        echo "<th scope='col'>Id</th>";
+        echo "<th scope='col'>Title</th>";
+        echo "<th scope='col'>Body</th>";
+        echo "<th scope='col'>Comment</th>";
+        echo "</tr>";
         echo "</thead>";
         echo "<tbody>";
-        
-        foreach($result as $row){
-            
-            echo "<tr>";
-            echo "<th scope='row'>".$row['id']."</th>";
-            echo "<td>".$row['title']."</td>";
-            echo "<td>".$row['body']."</td>";
 
-            if (isset($row['comment'])){
-                echo "<td>".$row['comment']."</td>";
+        foreach ($result as $row) {
+
+            echo "<tr>";
+            echo "<th scope='row'>" . $row['id'] . "</th>";
+            echo "<td>" . $row['title'] . "</td>";
+            echo "<td>" . $row['body'] . "</td>";
+
+            if (isset($row['comment'])) {
+                echo "<td>" . $row['comment'] . "</td>";
             }
-            
+
             echo "</tr>";
-            
         }
 
         echo "</tbody>";
-
-        } else {
-            return;
-        }
-
-        conectionEnd($connection);
+    } else {
+        return;
     }
-    if (isset($_GET['search'])) {
-        fetch($_GET['search']);
-    }
-?>
+
+    conectionEnd($connection);
+}
+if (isset($_GET['search'])) {
+    fetch(htmlspecialchars($_GET['search']));
+}
