@@ -13,21 +13,21 @@
         
         <script>
             function usersearchTxt(str) {
+                
                 if (str.length == 0) {
-                document.getElementById("searchTable").innerHTML = "";
-                return;
-                } else {
+                    document.getElementById("searchTable").innerHTML = "";
+                    str = "";
+                }
+
                 var xmlhttp = new XMLHttpRequest();
-                xmlhttp.onreadystatechange = function () {
+                xmlhttp.onreadystatechange = function () 
+                {
                     if(this.readyState == 4 && this.status == 200){
-                    document.getElementById('searchTable').innerHTML = this.responseText;
-                    //document.getElementById("searchTable").style.border="1px solid #A5ACB2";
+                        document.getElementById('searchTable').innerHTML = this.responseText;
                     }
-                    }
+                }
                 xmlhttp.open("GET","DBManager.php?search="+str,true);
                 xmlhttp.send();
-
-                }
             }
         </script>
        
@@ -64,6 +64,7 @@
                     <?php
                         include 'DBManager.php';
                         echo fetch('');
+                        
                     ?>
                 
             </table>

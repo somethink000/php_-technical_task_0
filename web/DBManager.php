@@ -18,10 +18,23 @@ function fetch($value = '')
     $connection = conectionStart();
 
     $result = array();
+   
+    if ( strlen($value) > 2) {
 
-    if (strlen($value) > 2) {
+        // $commentsSql = mysqli_query($connection, "SELECT * FROM Comments WHERE name LIKE '%" . $value . "%'");
+        
+     
+        // if ($connection->query($commentsSql) != TRUE) 
+        // {
+        //     echo "<h1>По запросу ничего не найдено</h1>";
+        //     return;
+        // }
+            
+        // $commentsResult = $connection->query($commentsSql);
 
-        $commentsResult = mysqli_query($connection, "SELECT * FROM Comments WHERE name LIKE '%" . $value . "%'");
+
+        $commentsResult = mysqli_query($connection, "SELECT * FROM Comments WHERE name LIKE '%" . $value . "%'") or die(); echo("<h1>Ничего не найдено</h1>"); return; 
+
         $commentsResultArray = array();
         while($row = mysqli_fetch_assoc($commentsResult)) {
             $commentsResultArray[] = $row;
@@ -82,5 +95,6 @@ function fetch($value = '')
     conectionEnd($connection);
 }
 if (isset($_GET['search'])) {
+
     fetch(htmlspecialchars($_GET['search']));
 }
