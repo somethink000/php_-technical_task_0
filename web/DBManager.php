@@ -1,65 +1,50 @@
 <?php
 
-function conectionStart()
-{
-    $servername = "db";
-    $username = "example";
-    $password = "secret2";
-    $dbname = "stage";
-    $connection = mysqli_connect($servername, $username, $password, $dbname);
-    return $connection;
-}
-function conectionEnd($value)
-{
-    mysqli_close($value);
-}
+
 function fetch($value = '')
 {
-    $connection = conectionStart();
+    
 
     $result = array();
-   
+
+    $pdo = new PDO('mysql:host=db;dbname=stage', "example", "secret2");
+
+
     if ( strlen($value) > 2) {
-
-        // $commentsSql = mysqli_query($connection, "SELECT * FROM Comments WHERE name LIKE '%" . $value . "%'");
         
-     
-        // if ($connection->query($commentsSql) != TRUE) 
-        // {
-        //     echo "<h1>По запросу ничего не найдено</h1>";
-        //     return;
-        // }
-            
-        // $commentsResult = $connection->query($commentsSql);
-
-
-        $commentsResult = mysqli_query($connection, "SELECT * FROM Comments WHERE name LIKE '%" . $value . "%'") or die(); echo("<h1>Ничего не найдено</h1>"); return; 
-
+        $commentsResult = $pdo->query("SELECT * FROM Comments WHERE name LIKE '%" . $value . "%'");
+        
+    
         $commentsResultArray = array();
-        while($row = mysqli_fetch_assoc($commentsResult)) {
-            $commentsResultArray[] = $row;
+        
+        foreach ($commentsResult as $comment){
+            $commentsResultArray[] = $comment;
         }
+         
+            
 
         $postsIds = array_unique(array_map(fn($comment) => $comment['postId'], $commentsResultArray));
 
         $postsIdsSQL = implode(',', $postsIds);
 
-        $postsResult = mysqli_query($connection, "SELECT * FROM Posts WHERE id IN ($postsIdsSQL)");
+        $postsResult = $pdo->query("SELECT * FROM Posts WHERE id IN ($postsIdsSQL)");
 
         foreach ($postsResult as $post) {
             $result[$post['id']] = $post;
         }
 
-        foreach ($commentsResult as $comment) {
+        foreach ($commentsResultArray as $comment) {
 
             $result[$comment['postId']]['comment'] = $comment['name'];
 
         }
+
     } else {
-        $result = mysqli_query($connection, "SELECT * FROM Posts");
+
+        $result = $pdo->query("SELECT * FROM Posts");
     }
 
-
+   
     if ($result) {
 
 
@@ -92,8 +77,11 @@ function fetch($value = '')
         return;
     }
 
-    conectionEnd($connection);
-}
+
+    $pdo = null;
+    $dbh = null;
+
+}   
 if (isset($_GET['search'])) {
 
     fetch(htmlspecialchars($_GET['search']));
